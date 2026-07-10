@@ -64,6 +64,10 @@ const SECURITY_HEADERS = [
 ] as const;
 
 const nextConfig: NextConfig = {
+  // Allow dev requests from the LAN IP so HMR/assets work when the
+  // app is opened from another device or directly via 192.168.1.52.
+  allowedDevOrigins: ["192.168.1.52", "127.0.0.1", "localhost"],
+
   /**
    * Cache-Control policy.
    *

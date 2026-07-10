@@ -27,6 +27,10 @@ import {
 import { SettingsPanelHead } from './settings-panel-head';
 import { AiKnowledgeCard } from './ai-knowledge';
 import { AI_PROVIDER_DEFAULT_MODEL } from '@/lib/ai/defaults';
+import {
+  FITNESS_CENTER_PERSONA_PROMPT_PTBR,
+  FITNESS_CENTER_PERSONA_SELLING_PROMPT_PTBR,
+} from '@/lib/ai/personas';
 import type { AiProvider } from '@/lib/ai/types';
 import type { AccountMember } from '@/types';
 import { fetchAccountMembers, memberLabel } from '@/lib/account/members';
@@ -141,6 +145,16 @@ export function AiConfig() {
   const embeddingsKeyPayload = () =>
     embeddingsKeyEdited ? embeddingsKey.trim() || null : undefined;
 
+  const applyFitnessPersona = () => {
+    setSystemPrompt(FITNESS_CENTER_PERSONA_PROMPT_PTBR);
+    setIsActive(true);
+  };
+
+  const applyFitnessSalesPersona = () => {
+    setSystemPrompt(FITNESS_CENTER_PERSONA_SELLING_PROMPT_PTBR);
+    setIsActive(true);
+  };
+
   const buildBody = () => ({
     provider,
     model: model.trim(),
@@ -233,8 +247,7 @@ export function AiConfig() {
   if (loading || profileLoading) {
     return (
       <div className="flex items-center justify-center py-16 text-muted-foreground">
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('loadFailed')} {/* Re-using label or a global one, wait, loading is better. Let's use useTranslations from overview or just hardcode Loading... actually I should add loading to aiConfig */}
-        {/* Wait, I didn't add loading to aiConfig. I'll just use loading. */}
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('loading')}
       </div>
     );
   }
@@ -390,7 +403,30 @@ export function AiConfig() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="ai-prompt">{t('businessContext')}</Label>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <Label htmlFor="ai-prompt">{t('businessContext')}</Label>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={applyFitnessPersona}
+                    disabled={disabled}
+                  >
+                    {t('applyFitnessPersona')}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={applyFitnessSalesPersona}
+                    disabled={disabled}
+                  >
+                    {t('applyFitnessSalesPersona')}
+                  </Button>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {t('fitnessPersonaHint')}
+              </p>
               <Textarea
                 id="ai-prompt"
                 value={systemPrompt}
